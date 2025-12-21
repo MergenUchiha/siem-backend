@@ -1,0 +1,139 @@
+prisma/seed.ts(1,30): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+src/alerts/alerts.service.ts(9,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/alerts/alerts.service.ts(15,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/alerts/alerts.service.ts(21,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/alerts/alerts.service.ts(40,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/alerts/alerts.service.ts(47,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/alerts/alerts.service.ts(57,30): error TS2339: Property 'alert' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(15,19): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(16,19): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(17,19): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(18,19): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(24,46): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(34,50): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(60,36): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(111,44): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(116,37): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(126,46): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/analytics/analytics.service.ts(138,40): error TS2339: Property '$queryRaw' does not exist on type 'PrismaService'.
+src/app.controller.spec.ts(2,31): error TS2307: Cannot find module './app.controller' or its corresponding type declarations.
+src/app.controller.spec.ts(3,28): error TS2307: Cannot find module './app.service' or its corresponding type declarations.
+src/auth/auth.service.ts(16,36): error TS2339: Property 'user' does not exist on type 'PrismaService'.
+src/auth/auth.service.ts(40,36): error TS2339: Property 'user' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(4,24): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+src/incidents/incidents.service.ts(11,30): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(33,30): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(40,40): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(61,30): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(70,30): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(76,37): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(78,44): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(83,46): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/incidents/incidents.service.ts(102,30): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(4,24): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+src/logs/logs.service.ts(11,30): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(40,19): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(46,19): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(59,30): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(65,36): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(74,37): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(76,46): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(96,38): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/logs/logs.service.ts(108,30): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+src/prisma/prisma.service.ts(2,30): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+src/prisma/prisma.service.ts(7,16): error TS2339: Property '$connect' does not exist on type 'PrismaService'.
+src/prisma/prisma.service.ts(12,16): error TS2339: Property '$disconnect' does not exist on type 'PrismaService'.
+test-prisma.ts(1,30): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+test/app.e2e-spec.ts(20,12): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(32,18): error TS2339: Property '$disconnect' does not exist on type 'PrismaService'.
+test/auth.e2e-spec.ts(37,18): error TS2339: Property 'user' does not exist on type 'PrismaService'.
+test/auth.e2e-spec.ts(48,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(69,13): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(75,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(88,13): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(92,33): error TS2339: Property 'user' does not exist on type 'PrismaService'.
+test/auth.e2e-spec.ts(110,13): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(116,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(131,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(141,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/auth.e2e-spec.ts(151,30): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(32,18): error TS2339: Property '$disconnect' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(37,18): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(50,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(69,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(78,20): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(110,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(120,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(130,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(142,37): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(153,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(163,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(171,37): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(187,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(199,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(208,37): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(219,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(225,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/incidents.e2e-spec.ts(233,20): error TS2339: Property 'incident' does not exist on type 'PrismaService'.
+test/incidents.e2e-spec.ts(265,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(32,18): error TS2339: Property '$disconnect' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(38,18): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(51,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(70,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(85,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(100,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(110,20): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(138,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(152,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(163,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(173,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(183,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(197,20): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(225,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(239,20): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(267,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(282,32): error TS2339: Property 'log' does not exist on type 'PrismaService'.
+test/logs.e2e-spec.ts(292,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/logs.e2e-spec.ts(302,14): error TS2349: This expression is not callable.
+  Type '{ default: SuperTestStatic; Test: typeof Test; agent: typeof TestAgent & ((app?: App | undefined, options?: AgentOptions | undefined) => TestAgent<...>); }' has no call signatures.
+test/prisma-test.service.ts(1,30): error TS2306: File 'C:/Users/merge/Desktop/Meretdurdy/siem-backend/node_modules/@prisma/client/default.d.ts' is not a module.
+test/prisma-test.service.ts(17,16): error TS2339: Property 'alert' does not exist on type 'PrismaTestService'.
+test/prisma-test.service.ts(18,16): error TS2339: Property 'settings' does not exist on type 'PrismaTestService'.
+test/prisma-test.service.ts(19,16): error TS2339: Property 'incident' does not exist on type 'PrismaTestService'.
+test/prisma-test.service.ts(20,16): error TS2339: Property 'log' does not exist on type 'PrismaTestService'.
+test/prisma-test.service.ts(21,16): error TS2339: Property 'user' does not exist on type 'PrismaTestService'.
+test/prisma-test.service.ts(26,16): error TS2339: Property '$disconnect' does not exist on type 'PrismaTestService'.

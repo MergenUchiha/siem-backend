@@ -1,0 +1,106 @@
+// Prisma Schema для SIEM Light
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum для уровней severity
+enum SeverityLevel {
+  critical
+  high
+  medium
+  low
+  info
+}
+
+// Enum для статусов инцидентов
+enum IncidentStatus {
+  open
+  investigating
+  resolved
+  closed
+}
+
+// Модель пользователя
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("analyst") // admin, analyst, viewer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// Модель лога безопасности
+model Log {
+  id        String        @id @default(uuid())
+  timestamp DateTime      @default(now())
+  source    String
+  severity  SeverityLevel @default(info)
+  message   String
+  ip        String
+  user      String?
+  action    String
+  details   Json?
+
+  @@index([timestamp])
+  @@index([severity])
+  @@index([source])
+  @@map("logs")
+}
+
+// Модель инцидента
+model Incident {
+  id              String         @id @default(uuid())
+  title           String
+  severity        SeverityLevel
+  status          IncidentStatus @default(open)
+  timestamp       DateTime       @default(now())
+  affectedSystems String[]
+  description     String
+  assignedTo      String?
+  tags            String[]
+  resolvedAt      DateTime?
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@index([severity])
+  @@index([timestamp])
+  @@map("incidents")
+}
+
+// Модель правила алерта
+model Alert {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  severity    SeverityLevel
+  enabled     Boolean       @default(true)
+  condition   String        // JSON строка с условиями
+  action      String        // JSON строка с действиями
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("alerts")
+}
+
+// Модель настроек системы
+model Settings {
+  id                  String   @id @default(uuid())
+  logRetentionDays    Int      @default(90)
+  incidentRetentionDays Int    @default(365)
+  emailNotifications  Boolean  @default(true)
+  slackNotifications  Boolean  @default(false)
+  webhookUrl          String?
+  updatedAt           DateTime @updatedAt
+
+  @@map("settings")
+}
