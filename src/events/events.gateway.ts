@@ -9,7 +9,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: '*',
     credentials: true,
   },
 })
@@ -21,8 +21,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleConnection(client: Socket) {
     this.connectedClients.add(client.id);
-    console.log(`✅ Client connected: ${client.id} (Total: ${this.connectedClients.size})`);
-    
+    console.log(
+      `✅ Client connected: ${client.id} (Total: ${this.connectedClients.size})`,
+    );
+
     // Send connection confirmation
     client.emit('connected', {
       message: 'Connected to SIEM WebSocket',
@@ -32,7 +34,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket) {
     this.connectedClients.delete(client.id);
-    console.log(`❌ Client disconnected: ${client.id} (Total: ${this.connectedClients.size})`);
+    console.log(
+      `❌ Client disconnected: ${client.id} (Total: ${this.connectedClients.size})`,
+    );
   }
 
   // Emit new log to all clients

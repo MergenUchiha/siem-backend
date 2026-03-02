@@ -179,7 +179,7 @@ export class SettingsService {
 
     // Build the remote GET URL
     const protocol = config.port === '443' ? 'https' : 'http';
-    const pullPath = config.path.replace(/\/ingest$/, '/logs');
+    const pullPath = config.path.replace(/\/ingest$/, '');
     const qs = new URLSearchParams();
     if (params.limit) qs.set('limit', String(params.limit));
     if (params.since) qs.set('since', params.since);
