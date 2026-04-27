@@ -10,8 +10,9 @@
  *  - `getWebhookConfig` / `saveWebhookConfig` are idempotent — safe to call multiple times
  */
 
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EventsGateway } from '../events/events.gateway';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -124,9 +125,25 @@ function normaliseLog(raw: Record<string, unknown>) {
 
 // ─── Service ───────────────────────────────────────────────────────────────────
 
+export interface AutoPullStatus {
+  running: boolean;
+  intervalSeconds: number;
+  lastPullAt: string | null;
+  lastPullResult: PullResult | null;
+}
+
 @Injectable()
 export class SettingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(SettingsService.name);
+  private autoPullTimer: ReturnType<typeof setInterval> | null = null;
+  private autoPullIntervalSeconds = 30;
+  private lastPullAt: string | null = null;
+  private lastPullResult: PullResult | null = null;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventsGateway: EventsGateway,
+  ) {}
 
   // ── Webhook config ──────────────────────────────────────────────────────────
 
@@ -274,5 +291,76 @@ export class SettingsService {
       return this.prisma.settings.update({ where: { id: existing.id }, data });
     }
     return this.prisma.settings.create({ data: data as any });
+  }
+
+  // ── Auto-pull ──────────────────────────────────────────────────────────────
+
+  getAutoPullStatus(): AutoPullStatus {
+    return {
+      running: this.autoPullTimer !== null,
+      intervalSeconds: this.autoPullIntervalSeconds,
+      lastPullAt: this.lastPullAt,
+      lastPullResult: this.lastPullResult,
+    };
+  }
+
+  startAutoPull(intervalSeconds?: number): AutoPullStatus {
+    if (intervalSeconds && intervalSeconds >= 1) {
+      this.autoPullIntervalSeconds = intervalSeconds;
+    }
+
+    // Clear existing timer if any
+    if (this.autoPullTimer) {
+      clearInterval(this.autoPullTimer);
+    }
+
+    this.logger.log(
+      `Starting auto-pull every ${this.autoPullIntervalSeconds}s`,
+    );
+
+    // Run immediately, then on interval
+    this.executeAutoPull();
+    this.autoPullTimer = setInterval(
+      () => this.executeAutoPull(),
+      this.autoPullIntervalSeconds * 1000,
+    );
+
+    return this.getAutoPullStatus();
+  }
+
+  stopAutoPull(): AutoPullStatus {
+    if (this.autoPullTimer) {
+      clearInterval(this.autoPullTimer);
+      this.autoPullTimer = null;
+      this.logger.log('Auto-pull stopped');
+    }
+    return this.getAutoPullStatus();
+  }
+
+  private async executeAutoPull() {
+    try {
+      const config = await this.getWebhookConfig();
+      if (!config.host || !config.enabled) {
+        this.logger.warn('Auto-pull skipped: no host configured or integration disabled');
+        return;
+      }
+
+      const result = await this.pullLogs({ limit: 100 });
+      this.lastPullAt = new Date().toISOString();
+      this.lastPullResult = result;
+
+      if (result.saved > 0) {
+        this.logger.log(`Auto-pull: saved ${result.saved} new logs`);
+
+        // Broadcast each new log via WebSocket
+        for (const log of result.logs) {
+          this.eventsGateway.broadcastNewLog(log);
+        }
+      }
+    } catch (err: any) {
+      this.logger.error(`Auto-pull failed: ${err.message}`);
+      this.lastPullAt = new Date().toISOString();
+      this.lastPullResult = { fetched: 0, saved: 0, errors: 1, logs: [] };
+    }
   }
 }

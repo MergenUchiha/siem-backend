@@ -53,11 +53,12 @@ export class LogsController {
   async ingestLog(@Body() logData: any, @Headers('x-api-key') apiKey: string) {
     this.validateApiKey(apiKey);
 
+    // Определяем severity на основе всех данных лога (message, action, IP, user, комбинации)
+    const severity = this.determineSeverity(logData);
+
     const normalizedLog: CreateLogDto = {
       source: logData.source || logData.host || logData.hostname || 'External',
-      severity: this.mapSeverity(
-        logData.level || logData.severity || logData.priority || 'info',
-      ),
+      severity,
       message: logData.message || logData.msg || logData.log || 'No message',
       ip:
         logData.ip ||
@@ -115,7 +116,69 @@ export class LogsController {
     }
   }
 
-  private mapSeverity(level: string | number): SeverityLevel {
+  // ============================================================
+  // Определение severity: многоуровневый анализ
+  // 1) Базовый маппинг по level/severity полю
+  // 2) Анализ ключевых слов в message
+  // 3) Анализ action
+  // 4) Анализ IP-адреса (внешний/приватный)
+  // 5) Комбинированные правила (несколько факторов)
+  // Итоговый severity = максимальный из всех проверок
+  // ============================================================
+
+  private readonly SEVERITY_WEIGHT: Record<SeverityLevel, number> = {
+    [SeverityLevel.INFO]: 0,
+    [SeverityLevel.LOW]: 1,
+    [SeverityLevel.MEDIUM]: 2,
+    [SeverityLevel.HIGH]: 3,
+    [SeverityLevel.CRITICAL]: 4,
+  };
+
+  private readonly WEIGHT_TO_SEVERITY: SeverityLevel[] = [
+    SeverityLevel.INFO,
+    SeverityLevel.LOW,
+    SeverityLevel.MEDIUM,
+    SeverityLevel.HIGH,
+    SeverityLevel.CRITICAL,
+  ];
+
+  /** Главный метод: определяет severity на основе всех доступных данных лога */
+  private determineSeverity(logData: any): SeverityLevel {
+    const rawLevel = logData.level || logData.severity || logData.priority || 'info';
+    const message = (logData.message || logData.msg || logData.log || '').toLowerCase();
+    const action = (logData.action || logData.event_type || logData.event || '').toLowerCase();
+    const ip = logData.ip || logData.src_ip || logData.source_ip || logData.host || '';
+    const user = (logData.user || logData.username || logData.account || '').toLowerCase();
+
+    // 1) Базовый маппинг по level
+    const baseSeverity = this.mapSeverityFromLevel(rawLevel);
+
+    // 2) По ключевым словам в message
+    const messageSeverity = this.analyzeBySeverityKeywords(message);
+
+    // 3) По action
+    const actionSeverity = this.analyzeByAction(action);
+
+    // 4) По IP
+    const ipSeverity = this.analyzeByIp(ip);
+
+    // 5) Комбинированные правила
+    const comboSeverity = this.analyzeByCombo(message, action, ip, user);
+
+    // Берём максимальный уровень из всех проверок
+    const maxWeight = Math.max(
+      this.SEVERITY_WEIGHT[baseSeverity],
+      this.SEVERITY_WEIGHT[messageSeverity],
+      this.SEVERITY_WEIGHT[actionSeverity],
+      this.SEVERITY_WEIGHT[ipSeverity],
+      this.SEVERITY_WEIGHT[comboSeverity],
+    );
+
+    return this.WEIGHT_TO_SEVERITY[maxWeight];
+  }
+
+  // --- 1) Базовый маппинг по level/severity/priority ---
+  private mapSeverityFromLevel(level: string | number): SeverityLevel {
     if (typeof level === 'number') {
       const syslogMapping: Record<number, SeverityLevel> = {
         0: SeverityLevel.CRITICAL,
@@ -162,4 +225,179 @@ export class LogsController {
 
     return mapping[levelStr] || SeverityLevel.INFO;
   }
+
+  // --- 2) Анализ ключевых слов в message ---
+  private readonly MESSAGE_KEYWORDS: { pattern: RegExp; severity: SeverityLevel }[] = [
+    // CRITICAL — активные атаки и критические угрозы
+    { pattern: /ransomware/,               severity: SeverityLevel.CRITICAL },
+    { pattern: /malware\s+(detected|found)/,severity: SeverityLevel.CRITICAL },
+    { pattern: /rootkit/,                   severity: SeverityLevel.CRITICAL },
+    { pattern: /backdoor/,                  severity: SeverityLevel.CRITICAL },
+    { pattern: /zero[- ]?day/,              severity: SeverityLevel.CRITICAL },
+    { pattern: /data\s+(breach|leak|exfiltration)/, severity: SeverityLevel.CRITICAL },
+    { pattern: /privilege\s+escalation/,    severity: SeverityLevel.CRITICAL },
+    { pattern: /remote\s+code\s+execution/, severity: SeverityLevel.CRITICAL },
+    { pattern: /rce\s+(exploit|attack|detected)/, severity: SeverityLevel.CRITICAL },
+    { pattern: /command\s+injection/,       severity: SeverityLevel.CRITICAL },
+    { pattern: /unauthorized\s+root/,       severity: SeverityLevel.CRITICAL },
+    { pattern: /system\s+compromised/,      severity: SeverityLevel.CRITICAL },
+
+    // HIGH — попытки атак и подозрительная активность
+    { pattern: /brute\s*force/,             severity: SeverityLevel.HIGH },
+    { pattern: /sql\s*injection/,           severity: SeverityLevel.HIGH },
+    { pattern: /xss\s+(attack|detected|attempt)/, severity: SeverityLevel.HIGH },
+    { pattern: /cross[- ]site\s+scripting/, severity: SeverityLevel.HIGH },
+    { pattern: /ddos/,                      severity: SeverityLevel.HIGH },
+    { pattern: /denial\s+of\s+service/,     severity: SeverityLevel.HIGH },
+    { pattern: /port\s+scan/,               severity: SeverityLevel.HIGH },
+    { pattern: /unauthorized\s+access/,     severity: SeverityLevel.HIGH },
+    { pattern: /authentication\s+bypass/,   severity: SeverityLevel.HIGH },
+    { pattern: /directory\s+traversal/,     severity: SeverityLevel.HIGH },
+    { pattern: /path\s+traversal/,          severity: SeverityLevel.HIGH },
+    { pattern: /phishing/,                  severity: SeverityLevel.HIGH },
+    { pattern: /credential\s+(dump|theft|stolen)/, severity: SeverityLevel.HIGH },
+    { pattern: /suspicious\s+process/,      severity: SeverityLevel.HIGH },
+    { pattern: /multiple\s+failed\s+login/, severity: SeverityLevel.HIGH },
+
+    // MEDIUM — предупреждения
+    { pattern: /failed\s+login/,            severity: SeverityLevel.MEDIUM },
+    { pattern: /login\s+fail/,              severity: SeverityLevel.MEDIUM },
+    { pattern: /access\s+denied/,           severity: SeverityLevel.MEDIUM },
+    { pattern: /permission\s+denied/,       severity: SeverityLevel.MEDIUM },
+    { pattern: /invalid\s+(token|certificate|credentials)/, severity: SeverityLevel.MEDIUM },
+    { pattern: /suspicious\s+activity/,     severity: SeverityLevel.MEDIUM },
+    { pattern: /configuration\s+change/,    severity: SeverityLevel.MEDIUM },
+    { pattern: /firewall\s+block/,          severity: SeverityLevel.MEDIUM },
+    { pattern: /virus\s+detected/,          severity: SeverityLevel.MEDIUM },
+
+    // LOW — незначительные события
+    { pattern: /session\s+expired/,         severity: SeverityLevel.LOW },
+    { pattern: /password\s+reset/,          severity: SeverityLevel.LOW },
+    { pattern: /account\s+locked/,          severity: SeverityLevel.LOW },
+    { pattern: /rate\s+limit/,              severity: SeverityLevel.LOW },
+  ];
+
+  private analyzeBySeverityKeywords(message: string): SeverityLevel {
+    let maxWeight = 0;
+    for (const rule of this.MESSAGE_KEYWORDS) {
+      if (rule.pattern.test(message)) {
+        const w = this.SEVERITY_WEIGHT[rule.severity];
+        if (w > maxWeight) maxWeight = w;
+      }
+    }
+    return this.WEIGHT_TO_SEVERITY[maxWeight];
+  }
+
+  // --- 3) Анализ по action ---
+  private readonly ACTION_SEVERITY: { pattern: RegExp; severity: SeverityLevel }[] = [
+    // CRITICAL
+    { pattern: /^(data\s+export|mass\s+delete|system\s+shutdown|wipe)$/,  severity: SeverityLevel.CRITICAL },
+    { pattern: /privilege\s+escalat/,    severity: SeverityLevel.CRITICAL },
+    { pattern: /root\s+login/,           severity: SeverityLevel.CRITICAL },
+
+    // HIGH
+    { pattern: /file\s+delet/,           severity: SeverityLevel.HIGH },
+    { pattern: /user\s+delet/,           severity: SeverityLevel.HIGH },
+    { pattern: /config(uration)?\s+(change|modif)/, severity: SeverityLevel.HIGH },
+    { pattern: /firewall\s+(disable|rule\s+change)/, severity: SeverityLevel.HIGH },
+    { pattern: /service\s+(stop|disable)/, severity: SeverityLevel.HIGH },
+
+    // MEDIUM
+    { pattern: /login\s+(attempt|fail)/, severity: SeverityLevel.MEDIUM },
+    { pattern: /permission\s+change/,    severity: SeverityLevel.MEDIUM },
+    { pattern: /role\s+change/,          severity: SeverityLevel.MEDIUM },
+    { pattern: /password\s+change/,      severity: SeverityLevel.MEDIUM },
+
+    // LOW
+    { pattern: /logout/,                 severity: SeverityLevel.LOW },
+    { pattern: /session\s+start/,        severity: SeverityLevel.LOW },
+    { pattern: /file\s+(read|access)/,   severity: SeverityLevel.LOW },
+  ];
+
+  private analyzeByAction(action: string): SeverityLevel {
+    let maxWeight = 0;
+    for (const rule of this.ACTION_SEVERITY) {
+      if (rule.pattern.test(action)) {
+        const w = this.SEVERITY_WEIGHT[rule.severity];
+        if (w > maxWeight) maxWeight = w;
+      }
+    }
+    return this.WEIGHT_TO_SEVERITY[maxWeight];
+  }
+
+  // --- 4) Анализ по IP ---
+  private readonly KNOWN_MALICIOUS_RANGES = [
+    /^23\.227\.38\./,      // Известные C2 серверы
+    /^185\.220\.100\./,    // Tor exit nodes (часть)
+    /^185\.220\.101\./,
+    /^198\.98\.56\./,
+    /^45\.155\.205\./,     // Часто используемые для атак
+    /^194\.26\.29\./,
+    /^5\.188\.206\./,
+  ];
+
+  private isPrivateIp(ip: string): boolean {
+    return (
+      ip.startsWith('10.') ||
+      ip.startsWith('192.168.') ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ||
+      ip === '127.0.0.1' ||
+      ip === '0.0.0.0' ||
+      ip === '::1' ||
+      ip === ''
+    );
+  }
+
+  private analyzeByIp(ip: string): SeverityLevel {
+    if (!ip || this.isPrivateIp(ip)) {
+      return SeverityLevel.INFO;
+    }
+
+    // Проверка известных вредоносных диапазонов
+    for (const range of this.KNOWN_MALICIOUS_RANGES) {
+      if (range.test(ip)) {
+        return SeverityLevel.CRITICAL;
+      }
+    }
+
+    // Любой внешний (публичный) IP — небольшое повышение
+    return SeverityLevel.LOW;
+  }
+
+  // --- 5) Комбинированные правила ---
+  private analyzeByCombo(
+    message: string,
+    action: string,
+    ip: string,
+    user: string,
+  ): SeverityLevel {
+    const isExternal = ip && !this.isPrivateIp(ip);
+    const isAdmin = /\b(admin|root|superuser|administrator|sudo)\b/.test(user);
+    const isLoginFailure = /failed\s+login|login\s+fail|authentication\s+fail/.test(message)
+      || /login\s+(attempt|fail)/.test(action);
+    const isError = /error|err|fail/.test(message);
+
+    // Ошибка + admin + внешний IP → CRITICAL
+    if (isError && isAdmin && isExternal) {
+      return SeverityLevel.CRITICAL;
+    }
+
+    // Неудачный вход + admin → HIGH
+    if (isLoginFailure && isAdmin) {
+      return SeverityLevel.HIGH;
+    }
+
+    // Неудачный вход + внешний IP → HIGH
+    if (isLoginFailure && isExternal) {
+      return SeverityLevel.HIGH;
+    }
+
+    // admin + внешний IP → MEDIUM (сам по себе подозрительно)
+    if (isAdmin && isExternal) {
+      return SeverityLevel.MEDIUM;
+    }
+
+    return SeverityLevel.INFO;
+  }
+
 }

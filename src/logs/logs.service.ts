@@ -233,8 +233,8 @@ export class LogsService {
   // ========== Остальные методы без изменений ==========
 
   async findAll(filterDto: FilterLogDto) {
-    const { severity, source, search, page = 1, limit = 20 } = filterDto;
-    
+    const { severity, source, search, dateFrom, dateTo, page = 1, limit = 20 } = filterDto;
+
     const where: Prisma.LogWhereInput = {};
 
     if (severity) {
@@ -251,6 +251,16 @@ export class LogsService {
         { ip: { contains: search } },
         { user: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    if (dateFrom || dateTo) {
+      where.timestamp = {};
+      if (dateFrom) {
+        where.timestamp.gte = new Date(dateFrom);
+      }
+      if (dateTo) {
+        where.timestamp.lte = new Date(dateTo + 'T23:59:59.999Z');
+      }
     }
 
     const skip = (page - 1) * limit;

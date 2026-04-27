@@ -58,6 +58,16 @@ export class FilterLogDto {
   @IsString()
   search?: string;
 
+  @ApiProperty({ required: false, description: 'Filter logs from this date (ISO string or YYYY-MM-DD)' })
+  @IsOptional()
+  @IsString()
+  dateFrom?: string;
+
+  @ApiProperty({ required: false, description: 'Filter logs up to this date (ISO string or YYYY-MM-DD)' })
+  @IsOptional()
+  @IsString()
+  dateTo?: string;
+
   @ApiProperty({ required: false, default: 1, minimum: 1 })
   @IsOptional()
   @Type(() => Number)
